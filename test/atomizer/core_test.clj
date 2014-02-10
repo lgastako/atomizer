@@ -1,7 +1,14 @@
 (ns atomizer.core-test
-  (:require [clojure.test :refer :all]
-            [atomizer.core :refer :all]))
+  (:require [atomizer.plugins.autoload :refer [load-or!]]
+            [atomizer.plugins.autosave :refer [autosave!]]
+            [atomizer.plugins.defaultapp :refer [app-or!]]
+            [atomizer.plugins.logstate :refer [logstate!]]
+            [atomizer.plugins.undo :refer [make-undoable!]]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(def make-app [] {})
+
+(def testapp (-> (atom nil)
+                 (load-or! make-app)
+                 (autosave!)
+                 (logstate!)
+                 (make-undoable!)))
